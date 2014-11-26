@@ -37,9 +37,53 @@ void daemonize(void)
 	umask(0);
 }
 
-int poll_gps_data(void)
+void poll_gps_data(void)
 {
-	return 0;
+	FILE *file;
+	int rval, i;
+	struct gps_location *loc;
+
+	loc = malloc(sizeof(struct gps_location));
+	if (loc == NULL) {
+		perror("malloc");
+		goto exit;
+	}
+
+	file = fopen(GPS_LOCATION_FILE, "r");
+	if (file != 0) {
+		perror("fopen");
+		goto free;
+	}
+
+	for (i = 0; i < 3; i++) {
+		double d;
+		float f;
+
+		if (i < 2)
+			rval = fscanf(file, "%lf", &d);
+		else
+			rval = fscanf(file, "%f", &f);
+
+		if (rval < 1) {
+			perror("fscanf");
+			goto close;
+		}
+
+		if (i == 0)
+			loc->latitude = d;
+		else if (i == 1)
+			loc->longitude = d;
+		else
+			loc->accuracy = f;
+	}
+
+	rval = set_gps_location(loc);
+	if (rval != 0)
+		perror("set_gps_location");
+
+close:	fclose(file);
+free:	free(loc);
+exit:	return;
 }
 
 int main(int argc, char *argv[])
