@@ -39,6 +39,8 @@ void daemonize(void)
 
 void poll_gps_data(void)
 {
+	float f;
+	double d;
 	FILE *file;
 	int rval, i;
 	struct gps_location *loc;
@@ -50,15 +52,12 @@ void poll_gps_data(void)
 	}
 
 	file = fopen(GPS_LOCATION_FILE, "r");
-	if (file != 0) {
+	if (file == NULL) {
 		perror("fopen");
 		goto free;
 	}
 
 	for (i = 0; i < 3; i++) {
-		double d;
-		float f;
-
 		if (i < 2)
 			rval = fscanf(file, "%lf", &d);
 		else
