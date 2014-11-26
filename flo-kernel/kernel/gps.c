@@ -1,7 +1,14 @@
 /*
+ * kernel/gps.c
+ *
+ * Columbia University
+ * COMS W4118 Fall 2014
+ * Homework 6
+ *
  * E. Atlidakis, G. Koloventzos, A. Papancea
  * UNI: ea2615, gk2409, alp2200
  * Last updated: 11/26/2014
+ *
  */
 #include <linux/gps.h>
 #include <linux/slab.h>
