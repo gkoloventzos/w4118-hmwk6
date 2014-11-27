@@ -21,7 +21,7 @@
  * stores gps location
  * polled from daemon.
  */
-static struct gps_location k_location={
+static struct gps_location k_location = {
 	.latitude = 0,
 	.longitude = 0,
 	.accuracy = 0
