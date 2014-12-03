@@ -12,3 +12,4 @@ struct gps_location {
 	double longitude;
 	float  accuracy;  /* in meters */
 };
+

@@ -52,20 +52,26 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 }
 
 /*
- * Retrive the device's current location
+ * Retrive the given file's current location
  */
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
-				  struct gps_location __user *, loc)
+				  struct gps_location __user *, u_location)
 {
+	int rval;
 	int errno;
+	struct gps_location k_location;
 
-	if (copy_to_user(loc, &location, sizeof(location)) < 0) {
+	spin_lock(&location_lock);
+	memcpy(&k_location, &location, sizeof(location));
+	spin_unlock(&location_lock);
+
+	rval = copy_to_user(u_location, &k_location, sizeof(k_location));
+	if (rval < 0) {
 		errno = -EFAULT;
 		goto error;
 	}
 
 	return 0;
-
 error:
 	return errno;
 }
