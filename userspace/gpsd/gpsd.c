@@ -11,6 +11,11 @@
  *
  */
 #include "gpsd.h"
+#include <time.h>
+
+#define LOGFILE "/data/misc/gpstrace.log"
+#define DBG(fmt, ...) fprintf(fp, fmt, ## __VA_ARGS__)
+static FILE *fp;
 
 void daemonize(void)
 {
@@ -76,9 +81,16 @@ void poll_gps_data(void)
 			loc->accuracy = f;
 	}
 
+	DBG("%u - lat: %f, lng: %f, accuracy: %f\n", (unsigned)time(NULL),
+						     loc->latitude,
+						     loc->longitude,
+						     loc->accuracy);
+
 	rval = set_gps_location(loc);
-	if (rval != 0)
+	if (rval != 0) {
 		perror("set_gps_location");
+		DBG("failed to write gps data to kernel\n");
+	}
 
 close:	fclose(file);
 free:	free(loc);
@@ -92,10 +104,18 @@ int main(int argc, char *argv[])
 
 	printf("daemon: start polling for gps data\n");
 
+	fp = fopen(LOGFILE, "w+");
+	if (fp == NULL) {
+		perror("fopen");
+		exit(EXIT_FAILURE);
+	}
+
 	while (1) {
 		poll_gps_data();
 		usleep(200000);
 	}
+
+	fclose(fp);
 
 	return 0;
 }
