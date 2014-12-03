@@ -12,23 +12,23 @@
  */
 #include "file_loc.h"
 
-static void print_location(struct gps_location *loc, int age)
+static void print_location(struct gps_location loc, int age)
 {
 	/* Google Maps base URL */
 	char *url = "https://maps.google.com/maps?q=";
 
-	printf("latitude:\t%f\n", loc->latitude);
-	printf("longitude:\t%f\n", loc->longitude);
-	printf("accuracy:\t%f\n", loc->accuracy);
+	printf("latitude:\t%f\n", loc.latitude);
+	printf("longitude:\t%f\n", loc.longitude);
+	printf("accuracy:\t%f\n", loc.accuracy);
 	printf("data age:\t%d\n", age);
-	printf("maps url:\t%s%f+%f\n", url, loc->latitude, loc->longitude);
+	printf("maps url:\t%s%f+%f\n", url, loc.latitude, loc.longitude);
 }
 
 int main(int argc, char **argv)
 {
 	int rval;
 	char *path;
-	struct gps_location *loc;
+	struct gps_location loc;
 
 	if (argc != 2) {
 		printf("Usage: %s {file path}\n", argv[0]);
@@ -37,13 +37,7 @@ int main(int argc, char **argv)
 
 	path = argv[1];
 
-	loc = malloc(sizeof(struct gps_location));
-	if (loc == NULL) {
-		perror("malloc");
-		return -1;
-	}
-
-	rval = get_gps_location(path, loc);
+	rval = get_gps_location(path, &loc);
 	if (rval < 0) {
 		perror("get_gps_location");
 		return -1;
