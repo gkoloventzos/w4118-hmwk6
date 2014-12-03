@@ -1,3 +1,5 @@
+#ifndef _GPS_H
+#define _GPS_H
 /*
  * include/linux/gps.h
  *
@@ -12,4 +14,4 @@ struct gps_location {
 	double longitude;
 	float  accuracy;  /* in meters */
 };
-
+#endif
