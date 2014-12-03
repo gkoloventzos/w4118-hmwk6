@@ -14,13 +14,14 @@
 
 static void print_location(struct gps_location *loc, int age)
 {
+	/* Google Maps base URL */
 	char *url = "https://maps.google.com/maps?q=";
 
-	printf("latitude:\t-73.23456\n");
-	printf("longitude:\t40.34500\n");
-	printf("accuracy:\t20.00000\n");
+	printf("latitude:\t%f\n", loc->latitude);
+	printf("longitude:\t%f\n", loc->longitude);
+	printf("accuracy:\t%f\n", loc->accuracy);
 	printf("data age:\t%d\n", age);
-	printf("maps url:\t%s12.2+14.3\n", url);
+	printf("maps url:\t%s%f+%f\n", url, loc->latitude, loc->longitude);
 }
 
 int main(int argc, char **argv)

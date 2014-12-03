@@ -26,7 +26,6 @@ static struct gps_location location = {
 
 static DEFINE_SPINLOCK(location_lock);
 
-
 /*
  * Updates the kernel with the device's current location
  */
@@ -41,12 +40,12 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 	if (u_location == NULL)
 		return -EINVAL;
 
-	rval = copy_from_user(&k_location, u_location, sizeof(k_location))
+	rval = copy_from_user(&k_location, u_location, sizeof(k_location));
 	if (rval < 0)
 		return -EFAULT;
 
 	spin_lock(&location_lock);
-	memcpy(&location, &k_location, sizeof(k_locaton));
+	memcpy(&location, &k_location, sizeof(k_location));
 	spin_unlock(&location_lock);
 
 	return 0;
@@ -58,5 +57,15 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 				  struct gps_location __user *, loc)
 {
+	int errno;
+
+	if (copy_to_user(loc, &location, sizeof(location)) < 0) {
+		errno = -EFAULT;
+		goto error;
+	}
+
 	return 0;
+
+error:
+	return errno;
 }
