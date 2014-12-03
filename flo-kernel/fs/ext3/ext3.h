@@ -309,6 +309,10 @@ struct ext3_inode {
 	} osd2;				/* OS dependent 2 */
 	__le16	i_extra_isize;
 	__le16	i_pad1;
+	__le64	i_latitude;	/* Last file change latitude */
+	__le64	i_longitude;	/* Last file change longitude */
+	__le32	i_accuracy;	/* Latitude and longitude accuracy */
+	__le32	i_coord_age;	/* Seconds since last GPS location update */
 };
 
 #define i_size_high	i_dir_acl
