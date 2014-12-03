@@ -1,17 +1,18 @@
 /*
- * gpsd.c
+ * userspace/gpsd/gpsd.c
+ * User space daemon polling GPS location data
  *
- * Columbia University
- * COMS W4118 Fall 2014
- * Homework 6
+ * Copyright (C) 2014 V. Atlidakis, G. Koloventzos, A. Papancea
  *
- * E. Atlidakis, G. Koloventzos, A. Papancea
- * UNI: ea2615, gk2409, alp2200
+ * COMS W4118 Fall 2014, Columbia University
+ *
  * Last updated: 11/26/2014
- *
  */
 #include "gpsd.h"
 
+/*
+ * Turn calling process into a daemon
+ */
 void daemonize(void)
 {
 	pid_t pid;
@@ -29,7 +30,6 @@ void daemonize(void)
 		perror("setsid");
 		exit(EXIT_FAILURE);
 	}
-
 	close(0);
 	close(1);
 	close(2);
