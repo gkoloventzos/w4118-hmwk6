@@ -2646,6 +2646,13 @@ int vfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	return error;
 }
 
+#ifdef CONFIG_GPS_TAGFS
+int vfs_get_gps_location(struct inode *node, struct gps_location *location)
+{
+	return node->i_op->get_gps_location(node, location);
+}
+#endif
+
 SYSCALL_DEFINE3(mkdirat, int, dfd, const char __user *, pathname, umode_t, mode)
 {
 	struct dentry *dentry;
@@ -3468,6 +3475,9 @@ const struct inode_operations page_symlink_inode_operations = {
 	.put_link	= page_put_link,
 };
 
+#ifdef CONFIG_GPS_TAGFS
+EXPORT_SYMBOL(vfs_get_gps_location);
+#endif
 EXPORT_SYMBOL(user_path_at);
 EXPORT_SYMBOL(follow_down_one);
 EXPORT_SYMBOL(follow_down);

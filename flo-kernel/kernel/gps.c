@@ -9,6 +9,7 @@
  */
 #include <linux/gps.h>
 #include <linux/slab.h>
+#include <linux/namei.h>
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/uaccess.h>
@@ -66,11 +67,24 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 {
 	int rval;
 	int errno;
+	struct path path;
+	struct inode *inode;
 	struct gps_location k_location;
+	struct ext3_inode_info *ei;
 
-	spin_lock(&location_lock);
-	memcpy(&k_location, &location, sizeof(location));
-	spin_unlock(&location_lock);
+	rval = user_path(pathname, &path);
+	if (rval) {
+		errno = rval;
+		goto error;
+	}
+	inode = path.dentry->d_inode;
+
+	/*
+	 * TODO
+	 * check permmisions and stuff...
+	 * check return value of vfs_get...
+	 */
+	vfs_get_gps_location(inode, &k_location);
 
 	rval = copy_to_user(u_location, &k_location, sizeof(k_location));
 	if (rval < 0) {
