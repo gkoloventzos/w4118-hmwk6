@@ -14,4 +14,6 @@ struct gps_location {
 	double longitude;
 	float  accuracy;  /* in meters */
 };
+
+void get_location(struct gps_location *loc);
 #endif
