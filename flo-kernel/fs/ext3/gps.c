@@ -1,4 +1,4 @@
-#include "gps.h"
+#include "ext3.h"
 #include <linux/gps.h>
 
 int ext3_set_gps_location(struct inode *inode)

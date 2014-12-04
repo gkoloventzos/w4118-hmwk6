@@ -1053,9 +1053,11 @@ int ext3_get_blocks_handle(handle_t *handle, struct inode *inode,
 	sector_t iblock, unsigned long maxblocks, struct buffer_head *bh_result,
 	int create);
 
-/*
- * TODO: Add gps declaratioin stuff here
- */
+#ifdef CONFIG_GPS_TAGFS
+extern int ext3_set_gps_location(struct inode *);
+extern int ext3_get_gps_location(struct inode *, struct gps_location *);
+#endif
+
 extern struct inode *ext3_iget(struct super_block *, unsigned long);
 extern int  ext3_write_inode (struct inode *, struct writeback_control *);
 extern int  ext3_setattr (struct dentry *, struct iattr *);
