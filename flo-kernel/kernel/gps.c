@@ -30,7 +30,7 @@ static DEFINE_SPINLOCK(location_lock);
 void get_location(struct gps_location *loc)
 {
 	spin_lock(&location_lock);
-	memcpy(&loc, &location, sizeof(location));
+	memcpy(loc, &location, sizeof(location));
 	spin_unlock(&location_lock);
 }
 
