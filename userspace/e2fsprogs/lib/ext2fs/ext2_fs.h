@@ -417,7 +417,10 @@ struct ext2_inode {
 			__u32	h_i_author;
 		} hurd2;
 	} osd2;				/* OS dependent 2 */
-
+	__le64	i_latitude;	/* Last file change latitude */
+	__le64	i_longitude;	/* Last file change longitude */
+	__le32	i_accuracy;	/* Latitude and longitude accuracy */
+	__le32	i_coord_age;	/* Seconds since last GPS location update */
 };
 
 /*
