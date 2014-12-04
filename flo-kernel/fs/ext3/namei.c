@@ -2527,6 +2527,10 @@ const struct inode_operations ext3_dir_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.get_acl	= ext3_get_acl,
+#ifdef CONFIG_GPS_TAGFS
+	.set_gps_location = ext3_set_gps_location,
+	.get_gps_location = ext3_get_gps_location,
+#endif
 };
 
 const struct inode_operations ext3_special_inode_operations = {
@@ -2538,4 +2542,8 @@ const struct inode_operations ext3_special_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.get_acl	= ext3_get_acl,
+#ifdef CONFIG_GPS_TAGFS
+	.set_gps_location = ext3_set_gps_location,
+	.get_gps_location = ext3_get_gps_location,
+#endif
 };

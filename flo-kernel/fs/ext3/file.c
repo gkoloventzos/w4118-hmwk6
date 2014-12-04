@@ -76,5 +76,9 @@ const struct inode_operations ext3_file_inode_operations = {
 #endif
 	.get_acl	= ext3_get_acl,
 	.fiemap		= ext3_fiemap,
+#ifdef CONFIG_GPS_TAGFS
+	.set_gps_location = ext3_set_gps_location,
+	.get_gps_location = ext3_get_gps_location,
+#endif
 };
 
