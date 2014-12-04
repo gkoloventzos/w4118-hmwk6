@@ -576,6 +576,9 @@ config LOG_BUF_SHIFT
 config HAVE_UNSTABLE_SCHED_CLOCK
 	bool
 
+menuconfig GPS_TAGFS
+  bool "GPS Tagged FS"
+
 menuconfig CGROUPS
 	boolean "Control Group support"
 	depends on EVENTFD
