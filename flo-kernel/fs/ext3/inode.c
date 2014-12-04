@@ -2915,6 +2915,17 @@ struct inode *ext3_iget(struct super_block *sb, unsigned long ino)
 	}
 	set_nlink(inode, le16_to_cpu(raw_inode->i_links_count));
 	inode->i_size = le32_to_cpu(raw_inode->i_size);
+
+	/*
+	 * Here the volatile world of inodes meets the non-volatile.
+	 * Let's add our GPS info.
+	 */
+#ifdef CONFIG_GPS_TAGFS
+	inode->i_latitude = (signed)le64_to_cpu(raw_inode->i_latitude);
+	inode->i_longitude = (signed)le64_to_cpu(raw_inode->i_longitude);
+	inode->i_accuracy = (signed)le32_to_cpu(raw_inode->i_accuracy);
+	inode->i_coord_age = (signed)le32_to_cpu(raw_inode->i_coord_age);
+#endif
 	inode->i_atime.tv_sec = (signed)le32_to_cpu(raw_inode->i_atime);
 	inode->i_ctime.tv_sec = (signed)le32_to_cpu(raw_inode->i_ctime);
 	inode->i_mtime.tv_sec = (signed)le32_to_cpu(raw_inode->i_mtime);
