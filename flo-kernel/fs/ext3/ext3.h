@@ -309,10 +309,12 @@ struct ext3_inode {
 	} osd2;				/* OS dependent 2 */
 	__le16	i_extra_isize;
 	__le16	i_pad1;
+#ifdef CONFIG_GPS_TAGFS
 	__le64	i_latitude;	/* Last file change latitude */
 	__le64	i_longitude;	/* Last file change longitude */
 	__le32	i_accuracy;	/* Latitude and longitude accuracy */
 	__le32	i_coord_age;	/* Seconds since last GPS location update */
+#endif
 };
 
 #define i_size_high	i_dir_acl
@@ -618,6 +620,12 @@ struct ext3_inode_info {
 	atomic_t i_datasync_tid;
 
 	struct inode vfs_inode;
+#ifdef CONFIG_GPS_TAGFS
+	__le64	i_latitude;	/* Last file change latitude */
+	__le64	i_longitude;	/* Last file change longitude */
+	__le32	i_accuracy;	/* Latitude and longitude accuracy */
+	__le32	i_coord_age;	/* Seconds since last GPS location update */
+#endif
 };
 
 /*
@@ -1045,6 +1053,9 @@ int ext3_get_blocks_handle(handle_t *handle, struct inode *inode,
 	sector_t iblock, unsigned long maxblocks, struct buffer_head *bh_result,
 	int create);
 
+/*
+ * TODO: Add gps declaratioin stuff here
+ */
 extern struct inode *ext3_iget(struct super_block *, unsigned long);
 extern int  ext3_write_inode (struct inode *, struct writeback_control *);
 extern int  ext3_setattr (struct dentry *, struct iattr *);
