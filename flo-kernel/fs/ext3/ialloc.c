@@ -349,6 +349,12 @@ static int find_group_other(struct super_block *sb, struct inode *parent)
 	return -1;
 }
 
+static inline
+int set_gps_location(struct inode *inode)
+{
+	return 0;
+}
+
 /*
  * There are two policies for allocating an inode.  If the new inode is
  * a directory, then a forward search is made for a block group with both
@@ -491,13 +497,8 @@ got:
 	inode->i_ino = ino;
 	/* This is the optimal IO size (for stat), not the fs block size */
 	inode->i_blocks = 0;
-
-	struct timespec test_time = {
-		.tv_sec = 777,
-		.tv_nsec = 0
-	};
-
-	inode->i_mtime = inode->i_atime = inode->i_ctime = test_time;//CURRENT_TIME_SEC;
+	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME_SEC;
+	printk(KERN_ERR "FUCKKKKKKKKKKKKKKK\n");
 
 	memset(ei->i_data, 0, sizeof(ei->i_data));
 	ei->i_dir_start_lookup = 0;
@@ -527,6 +528,7 @@ got:
 		err = -EIO;
 		goto fail;
 	}
+
 	spin_lock(&sbi->s_next_gen_lock);
 	inode->i_generation = sbi->s_next_generation++;
 	spin_unlock(&sbi->s_next_gen_lock);
