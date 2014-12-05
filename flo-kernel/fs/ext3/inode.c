@@ -3128,6 +3128,12 @@ again:
 	raw_inode->i_frag = ei->i_frag_no;
 	raw_inode->i_fsize = ei->i_frag_size;
 #endif
+#ifdef CONFIG_GPS_TAGFS
+	raw_inode->i_latitude = cpu_to_le64(ei->i_latitude);
+	raw_inode->i_longitude = cpu_to_le64(ei->i_latitude);
+	raw_inode->i_accuracy = cpu_to_le32(ei->i_accuracy);
+	raw_inode->i_coord_age =  cpu_to_le32(ei->i_coord_age);
+#endif
 	raw_inode->i_file_acl = cpu_to_le32(ei->i_file_acl);
 	if (!S_ISREG(inode->i_mode)) {
 		raw_inode->i_dir_acl = cpu_to_le32(ei->i_dir_acl);
