@@ -349,12 +349,6 @@ static int find_group_other(struct super_block *sb, struct inode *parent)
 	return -1;
 }
 
-static inline
-int set_gps_location(struct inode *inode)
-{
-	return 0;
-}
-
 /*
  * There are two policies for allocating an inode.  If the new inode is
  * a directory, then a forward search is made for a block group with both
@@ -499,10 +493,6 @@ got:
 	inode->i_blocks = 0;
 	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME_SEC;
 
-	/* LET'S HOPE FOR THE BEST */
-	ext3_set_gps_location(inode);
-	printk(KERN_ERR "FUCKKKKKKKKKKKKKKK\n");
-
 	memset(ei->i_data, 0, sizeof(ei->i_data));
 	ei->i_dir_start_lookup = 0;
 	ei->i_disksize = 0;
@@ -553,6 +543,9 @@ got:
 	err = dquot_alloc_inode(inode);
 	if (err)
 		goto fail_drop;
+
+	/* LET'S HOPE FOR THE BEST */
+	ext3_set_gps_location(inode);
 
 	err = ext3_init_acl(handle, inode, dir);
 	if (err)
