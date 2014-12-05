@@ -1546,6 +1546,7 @@ extern void unlock_super(struct super_block *);
  */
 #ifdef CONFIG_GPS_TAGFS
 extern int vfs_get_gps_location(struct inode *, struct gps_location *);
+extern int vfs_set_gps_location(struct inode *);
 #endif
 extern int vfs_create(struct inode *, struct dentry *, umode_t, struct nameidata *);
 extern int vfs_mkdir(struct inode *, struct dentry *, umode_t);

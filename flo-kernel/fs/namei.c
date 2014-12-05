@@ -2653,6 +2653,13 @@ int vfs_get_gps_location(struct inode *node, struct gps_location *location)
 		return -1;
 	return node->i_op->get_gps_location(node, location);
 }
+
+int vfs_set_gps_location(struct inode *node)
+{
+	if (!node->i_op->set_gps_location)
+		return -1;
+	return node->i_op->set_gps_location(node);
+}
 #endif
 
 SYSCALL_DEFINE3(mkdirat, int, dfd, const char __user *, pathname, umode_t, mode)
@@ -3479,6 +3486,7 @@ const struct inode_operations page_symlink_inode_operations = {
 
 #ifdef CONFIG_GPS_TAGFS
 EXPORT_SYMBOL(vfs_get_gps_location);
+EXPORT_SYMBOL(vfs_set_gps_location);
 #endif
 EXPORT_SYMBOL(user_path_at);
 EXPORT_SYMBOL(follow_down_one);
