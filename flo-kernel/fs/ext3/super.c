@@ -738,7 +738,7 @@ static int bdev_try_to_free_page(struct super_block *sb, struct page *page,
 	if (!page_has_buffers(page))
 		return 0;
 	if (journal)
-		return journal_try_to_free_buffers(journal, page, 
+		return journal_try_to_free_buffers(journal, page,
 						   wait & ~__GFP_WAIT);
 	return try_to_free_buffers(page);
 }
@@ -3034,6 +3034,8 @@ out:
 	}
 	inode->i_version++;
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+	/* set gps location */
+	ext3_set_gps_location(inode);
 	ext3_mark_inode_dirty(handle, inode);
 	mutex_unlock(&inode->i_mutex);
 	return len;

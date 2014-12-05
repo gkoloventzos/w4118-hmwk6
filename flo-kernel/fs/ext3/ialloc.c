@@ -544,7 +544,7 @@ got:
 	if (err)
 		goto fail_drop;
 
-	/* LET'S HOPE FOR THE BEST */
+	/* set gps location @ creation */
 	ext3_set_gps_location(inode);
 
 	err = ext3_init_acl(handle, inode, dir);
