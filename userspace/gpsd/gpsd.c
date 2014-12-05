@@ -44,10 +44,8 @@ void daemonize(void)
 
 void poll_gps_data(void)
 {
-	float f;
-	double d;
 	FILE *file;
-	int rval, i;
+	int rval;
 	struct gps_location *loc;
 
 	loc = malloc(sizeof(struct gps_location));
@@ -62,23 +60,10 @@ void poll_gps_data(void)
 		goto free;
 	}
 
-	for (i = 0; i < 3; i++) {
-		if (i < 2)
-			rval = fscanf(file, "%lf", &d);
-		else
-			rval = fscanf(file, "%f", &f);
-
-		if (rval < 1) {
-			perror("fscanf");
-			goto close;
-		}
-
-		if (i == 0)
-			loc->latitude = d;
-		else if (i == 1)
-			loc->longitude = d;
-		else
-			loc->accuracy = f;
+	if (fscanf(file, "%lf %lf %f",
+		   &loc->latitude, &loc->longitude, &loc->accuracy) != 3) {
+		perror("fscanf");
+		goto close;
 	}
 
 	DBG("%u - lat: %f, lng: %f, accuracy: %f\n", (unsigned)time(NULL),
