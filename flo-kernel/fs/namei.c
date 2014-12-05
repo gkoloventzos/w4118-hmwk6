@@ -2649,6 +2649,8 @@ int vfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 #ifdef CONFIG_GPS_TAGFS
 int vfs_get_gps_location(struct inode *node, struct gps_location *location)
 {
+	if (!node->i_op->get_gps_location)
+		return -1;
 	return node->i_op->get_gps_location(node, location);
 }
 #endif
