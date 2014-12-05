@@ -1,2 +1,5 @@
 userspace/gpsd/gpsd
 tags
+os_checkpatch.pl
+spelling.txt
+.gitignore
