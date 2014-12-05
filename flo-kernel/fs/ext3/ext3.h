@@ -621,10 +621,10 @@ struct ext3_inode_info {
 
 	struct inode vfs_inode;
 #ifdef CONFIG_GPS_TAGFS
-	__le64	i_latitude;	/* Last file change latitude */
-	__le64	i_longitude;	/* Last file change longitude */
-	__le32	i_accuracy;	/* Latitude and longitude accuracy */
-	__le32	i_coord_age;	/* Seconds since last GPS location update */
+	__u64 i_latitude;
+	__u64 i_longitude;
+	__u32 i_accuracy;
+	__u32 i_coord_age;
 #endif
 };
 
