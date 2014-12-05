@@ -1,29 +1,34 @@
 /*
  * flo-kernel/fs/ext3/gps.c
- * Backend ext3 gps-locations-related operations
+ * Backend ext3 GPS-location operations.
  *
  * Copyright (C) 2014 V. Atlidakis, G. Koloventzos, A. Papancea
  *
  * COMS W4118 Fall 2014, Columbia University
  */
-#include "ext3.h"
 #include <linux/gps.h>
+#include "ext3.h"
 
 /*
- * ext3_set_gps_location:
+ * ext3_set_gps_location: Update inode's GPS inforation.
  *
- * @inode:
+ * @inode: The inode whose GPS info we update.
  *
- * NOTE: Caller must hold the inode lock but does it?
+ * NOTE: Caller must hold i_lock.
  */
 int ext3_set_gps_location(struct inode *inode)
 {
 	struct gps_location local;
-	struct ext3_inode_info *ei;
+	struct ext3_inode_info *ei = EXT3_I(inode);
 
+	BUG_ON(!ei);
+
+	/*
+	 * Read device's current location using getter
+	 * exposed from /kernel/gps.c layer.
+	 */
 	get_location(&local);
 
-	ei = EXT3_I(inode);
 	memcpy(&ei->i_latitude, &local.latitude, sizeof(unsigned long long));
 	memcpy(&ei->i_longitude, &local.longitude, sizeof(unsigned long long));
 	memcpy(&ei->i_accuracy, &local.accuracy, sizeof(unsigned int));
@@ -32,29 +37,23 @@ int ext3_set_gps_location(struct inode *inode)
 }
 
 /*
- * ext3_get_gps_location:
+ * ext3_get_gps_location: Read inode's GPS information.
  *
- * @inode:
- * @locagtion:
+ * @inode: The inode in whose GPS info we are interested.
+ * @location: The sturct to return GPS info read.
  *
- *NOTE: The caller must not hold i_lock and it isn't.
- *      This function is passed into get_gps_location
- *      inode operation callback which is wrapped with
- *      vfs_get_gps_location and exposed to the rest of
- *      the kernel.
+ * NOTE: The caller must hold i_lock.
  */
 int ext3_get_gps_location(struct inode *inode, struct gps_location *location)
 {
 	struct gps_location local;
-	struct ext3_inode_info *ei;
+	struct ext3_inode_info *ei = EXT3_I(inode);
 
-	spin_lock(&inode->i_lock);
-	ei = EXT3_I(inode);
+	BUG_ON(!ei);
+
 	memcpy(&local.latitude, &ei->i_latitude, sizeof(unsigned long long));
 	memcpy(&local.longitude, &ei->i_longitude, sizeof(unsigned long long));
 	memcpy(&local.accuracy, &ei->i_accuracy, sizeof(unsigned int));
-	spin_unlock(&inode->i_lock);
-
 	memcpy(location, &local, sizeof(local));
 
 	return 0;
