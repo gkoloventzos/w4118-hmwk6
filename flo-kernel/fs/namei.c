@@ -2647,19 +2647,36 @@ int vfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 }
 
 #ifdef CONFIG_GPS_TAGFS
-int vfs_get_gps_location(struct inode *node, struct gps_location *location)
+/*
+ * VFS layer wrappers around GPS-location operations.
+ */
+int vfs_get_gps_location(struct inode *inode, struct gps_location *location)
 {
-	if (!node->i_op->get_gps_location)
-		return -1;
-	return node->i_op->get_gps_location(node, location);
+	int rval;
+
+	if (!inode->i_op->get_gps_location)
+		return -EPERM;
+
+	spin_lock(&inode->i_lock);
+	rval = inode->i_op->get_gps_location(inode, location);
+	spin_unlock(&inode->i_lock);
+
+	return rval;
 }
 EXPORT_SYMBOL(vfs_get_gps_location);
 
-int vfs_set_gps_location(struct inode *node)
+int vfs_set_gps_location(struct inode *inode)
 {
-	if (!node->i_op->set_gps_location)
-		return -1;
-	return node->i_op->set_gps_location(node);
+	int rval;
+
+	if (!inode->i_op->set_gps_location)
+		return -EPERM;
+
+	spin_lock(&inode->i_lock);
+	rval = inode->i_op->set_gps_location(inode);
+	spin_unlock(&inode->i_lock);
+
+	return rval;
 }
 EXPORT_SYMBOL(vfs_set_gps_location);
 #endif
