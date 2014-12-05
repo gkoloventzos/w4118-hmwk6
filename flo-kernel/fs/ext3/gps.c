@@ -12,7 +12,7 @@ int ext3_set_gps_location(struct inode *inode)
 	get_location(&local);
 
 	ei = EXT3_I(inode);
-	memcpy((void* )&ei->i_latitude, (void *)&local.latitude, sizeof(unsigned long long));
+	memcpy(&ei->i_latitude, &local.latitude, sizeof(unsigned long long));
 	memcpy(&ei->i_longitude, &local.longitude, sizeof(unsigned long long));
 	memcpy(&ei->i_accuracy, &local.accuracy, sizeof(unsigned int));
 
