@@ -27,7 +27,6 @@ int ext3_set_gps_location(struct inode *inode)
 	memcpy(&ei->i_latitude, &local.latitude, sizeof(unsigned long long));
 	memcpy(&ei->i_longitude, &local.longitude, sizeof(unsigned long long));
 	memcpy(&ei->i_accuracy, &local.accuracy, sizeof(unsigned int));
-	printk(KERN_ERR "ext3_set_gps_location: I am trying...\n");
 
 	return 0;
 }

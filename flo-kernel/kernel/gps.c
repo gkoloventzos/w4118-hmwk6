@@ -25,6 +25,9 @@ static struct gps_location location = {
 
 static DEFINE_SPINLOCK(location_lock);
 
+/*
+ * Accessor exposed to the rest of the kernel
+ */
 void get_location(struct gps_location *loc)
 {
 	spin_lock(&location_lock);

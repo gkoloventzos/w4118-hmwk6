@@ -789,8 +789,9 @@ static int ext3_splice_branch(handle_t *handle, struct inode *inode,
 	now = CURRENT_TIME_SEC;
 	if (!timespec_equal(&inode->i_ctime, &now) || !where->bh) {
 		inode->i_ctime = now;
-//		/* set gps location */
-//		ext3_set_gps_location(inode);
+#ifdef CONFIG_GPS_TAGFS
+		ext3_set_gps_location(inode);
+#endif
 		ext3_mark_inode_dirty(handle, inode);
 	}
 	/* ext3_mark_inode_dirty already updated i_sync_tid */
@@ -2649,8 +2650,9 @@ do_indirects:
 
 	mutex_unlock(&ei->truncate_mutex);
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
-//	/* set gps location */
-//	ext3_set_gps_location(inode);
+#ifdef CONFIG_GPS_TAGFS
+	ext3_set_gps_location(inode);
+#endif
 	ext3_mark_inode_dirty(handle, inode);
 
 	/*
@@ -3133,6 +3135,7 @@ again:
 	raw_inode->i_fsize = ei->i_frag_size;
 #endif
 #ifdef CONFIG_GPS_TAGFS
+	ext3_set_gps_location(inode);
 	raw_inode->i_latitude = ei->i_latitude;
 	raw_inode->i_longitude = ei->i_longitude;
 	raw_inode->i_accuracy = ei->i_accuracy;
