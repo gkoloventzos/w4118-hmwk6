@@ -94,9 +94,9 @@ long ext3_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 		ext3_set_inode_flags(inode);
 		inode->i_ctime = CURRENT_TIME_SEC;
-
-		/* set gps location */
+#ifdef CONFIG_GPS_TAGFS
 		ext3_set_gps_location(inode);
+#endif
 
 		err = ext3_mark_iloc_dirty(handle, inode, &iloc);
 flags_err:
@@ -142,8 +142,9 @@ flags_out:
 		if (err == 0) {
 			inode->i_ctime = CURRENT_TIME_SEC;
 			inode->i_generation = generation;
-			/* set gps location */
+#ifdef CONFIG_GPS_TAGFS
 			ext3_set_gps_location(inode);
+#endif
 			err = ext3_mark_iloc_dirty(handle, inode, &iloc);
 		}
 		ext3_journal_stop(handle);

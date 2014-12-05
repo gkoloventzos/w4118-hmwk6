@@ -1024,8 +1024,9 @@ ext3_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
 	if (!error) {
 		ext3_xattr_update_super_block(handle, inode->i_sb);
 		inode->i_ctime = CURRENT_TIME_SEC;
-		/* set gps location */
+#ifdef CONFIG_GPS_TAGFS
 		ext3_set_gps_location(inode);
+#endif
 		error = ext3_mark_iloc_dirty(handle, inode, &is.iloc);
 		/*
 		 * The bh is consumed by ext3_mark_iloc_dirty, even with
