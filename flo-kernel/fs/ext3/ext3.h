@@ -310,10 +310,10 @@ struct ext3_inode {
 	__le16	i_extra_isize;
 	__le16	i_pad1;
 #ifdef CONFIG_GPS_TAGFS
-	__le64	i_latitude;	/* Last file change latitude */
-	__le64	i_longitude;	/* Last file change longitude */
-	__le32	i_accuracy;	/* Latitude and longitude accuracy */
-	__le32	i_coord_age;	/* Seconds since last GPS location update */
+	__u64	i_latitude;	/* Last file change latitude */
+	__u64	i_longitude;	/* Last file change longitude */
+	__u32	i_accuracy;	/* Latitude and longitude accuracy */
+	__u32	i_coord_age;	/* Seconds since last GPS location update */
 #endif
 };
 
