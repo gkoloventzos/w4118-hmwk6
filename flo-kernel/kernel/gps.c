@@ -4,8 +4,6 @@
  * Copyright (C) 2014 V. Atlidakis, G. Koloventzos, A. Papancea
  *
  * COMS W4118 Fall 2014, Columbia University
- *
- * Last updated: 11/26/2014
  */
 #include <linux/gps.h>
 #include <linux/slab.h>
@@ -35,7 +33,9 @@ void get_location(struct gps_location *loc)
 }
 
 /*
- * Updates the kernel with the device's current location
+ * set_gps_location:  Updates the kernel with the device's current location
+ *
+ * @u_location:
  */
 SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 {
@@ -60,7 +60,10 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 }
 
 /*
- * Retrive the given file's current location
+ * get_gps_location: Retrive the given file's current location
+ *
+ * @pathname:
+ * @u_location:
  */
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 				  struct gps_location __user *, u_location)
