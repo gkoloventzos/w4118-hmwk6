@@ -1,16 +1,14 @@
 #ifndef _GPSD_H_
 #define _GPSD_H_
 /*
- * gpsd.h
+ * userspace/gpsd/gpsd.h
+ * User space daemon polling GPS location data header file
  *
- * Columbia University
- * COMS W4118 Fall 2014
- * Homework 6
+ * Copyright (C) 2014 V. Atlidakis, G. Koloventzos, A. Papancea
  *
- * E. Atlidakis, G. Koloventzos, A. Papancea
- * UNI: ea2615, gk2409, alp2200
- * Last updated: 11/26/2014
+ * COMS W4118 Fall 2014, Columbia University
  *
+ * Last updated: 12/05/2014
  */
 #include <errno.h>
 #include <stdio.h>
