@@ -23,22 +23,22 @@ static struct gps_location location = {
 	.accuracy = 0
 };
 
-static DEFINE_SPINLOCK(location_lock);
+static DEFINE_RWLOCK(location_lock);
 
 /*
  * Accessor exposed to the rest of the kernel
  */
 void get_location(struct gps_location *loc)
 {
-	spin_lock(&location_lock);
+	read_lock(&location_lock);
 	memcpy(loc, &location, sizeof(location));
-	spin_unlock(&location_lock);
+	read_unlock(&location_lock);
 }
 
 /*
- * set_gps_location:  Updates the kernel with the device's current location
+ * set_gps_location:  Updates the kernel with the device's current location.
  *
- * @u_location:
+ * @u_location: Current device's location given from userspace.
  */
 SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 {
@@ -55,18 +55,18 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 	if (rval < 0)
 		return -EFAULT;
 
-	spin_lock(&location_lock);
+	write_lock(&location_lock);
 	memcpy(&location, &k_location, sizeof(k_location));
-	spin_unlock(&location_lock);
+	write_unlock(&location_lock);
 
 	return 0;
 }
 
 /*
- * get_gps_location: Retrive the given file's current location
+ * get_gps_location: Retrive the given file's current location.
  *
- * @pathname:
- * @u_location:
+ * @pathname: Path of the file whose GPS info we will try to retrieve.
+ * @u_location: Userspace buffer to fill GPS info into.
  */
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 				  struct gps_location __user *, u_location)
