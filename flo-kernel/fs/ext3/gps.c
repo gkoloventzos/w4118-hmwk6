@@ -12,10 +12,17 @@ int ext3_set_gps_location(struct inode *inode)
 
 	get_location(&local);
 
+	printk(KERN_ERR "\n\nFUCKING SERIOUS??????\n\n\n");
+
 	ei = EXT3_I(inode);
 	ei->i_latitude = *((unsigned long long *) &local.latitude);
 	ei->i_longitude = *((unsigned long long *) &local.longitude);
 	ei->i_accuracy = *((unsigned long *) &local.accuracy);
+
+	printk(KERN_ERR "storing lat=%ld, lng=%ld, acc=%ld\n",
+			*((long int *)&ei->i_latitude),
+			*((long int *)&ei->i_longitude),
+			*((long int *)&ei->i_accuracy));
 
 	return 0;
 }

@@ -70,7 +70,6 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	struct path path;
 	struct inode *inode;
 	struct gps_location k_location;
-	struct ext3_inode_info *ei;
 
 	rval = user_path(pathname, &path);
 	if (rval) {
