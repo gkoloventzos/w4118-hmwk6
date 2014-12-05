@@ -44,41 +44,34 @@ void daemonize(void)
 
 void poll_gps_data(void)
 {
-	FILE *file;
 	int rval;
-	struct gps_location *loc;
-
-	loc = malloc(sizeof(struct gps_location));
-	if (loc == NULL) {
-		perror("malloc");
-		goto exit;
-	}
+	FILE *file;
+	struct gps_location location;
 
 	file = fopen(GPS_LOCATION_FILE, "r");
 	if (file == NULL) {
 		perror("fopen");
-		goto free;
+		goto exit;
 	}
 
 	if (fscanf(file, "%lf %lf %f",
-		   &loc->latitude, &loc->longitude, &loc->accuracy) != 3) {
+		   &location.latitude, &location.longitude, &location.accuracy) != 3) {
 		perror("fscanf");
 		goto close;
 	}
 
 	DBG("%u - lat: %f, lng: %f, accuracy: %f\n", (unsigned)time(NULL),
-						     loc->latitude,
-						     loc->longitude,
-						     loc->accuracy);
+						     location.latitude,
+						     location.longitude,
+						     location.accuracy);
 
-	rval = set_gps_location(loc);
-	if (rval != 0) {
+	rval = set_gps_location(&location);
+	if (rval < 0) {
 		perror("set_gps_location");
 		DBG("failed to write gps data to kernel\n");
 	}
 
 close:	fclose(file);
-free:	free(loc);
 exit:	return;
 }
 
@@ -86,8 +79,6 @@ int main(int argc, char *argv[])
 {
 	/* turn me into daemon */
 	daemonize();
-
-	printf("daemon: start polling for gps data\n");
 
 	fp = fopen(LOGFILE, "w+");
 	if (fp == NULL) {
@@ -101,6 +92,5 @@ int main(int argc, char *argv[])
 	}
 
 	fclose(fp);
-
 	return 0;
 }
