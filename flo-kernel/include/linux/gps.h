@@ -10,9 +10,10 @@
  * Last updated: 11/26/2014
  */
 struct gps_location {
-	double latitude;
-	double longitude;
-	float  accuracy;  /* in meters */
+	double 	latitude;
+	double 	longitude;
+	float  	accuracy; /* in meters */
+	int 	coord_age; /* in seconds */
 };
 
 void get_location(struct gps_location *loc);
