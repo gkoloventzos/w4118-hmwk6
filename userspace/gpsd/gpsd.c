@@ -56,11 +56,15 @@ void poll_gps_data(void)
 		goto exit;
 	}
 
-	if (fscanf(file, "%lf %lf %f",
-		   &location.latitude, &location.longitude, &location.accuracy) != 3) {
+	if (fscanf(file, "%lf %lf %f", &location.latitude,
+				       &location.longitude,
+				       &location.accuracy) != 3) {
 		perror("fscanf");
 		goto close;
 	}
+
+	&location.coord_age = CURRENT_TIME_SEC;
+
 #ifdef _DEBUG
 	DBG("%u - lat: %f, lng: %f, accuracy: %f\n", (unsigned)time(NULL),
 						     location.latitude,
