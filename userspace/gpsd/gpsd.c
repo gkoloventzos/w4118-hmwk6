@@ -63,7 +63,7 @@ void poll_gps_data(void)
 		goto close;
 	}
 
-	&location.coord_age = CURRENT_TIME_SEC;
+	&location.coord_age = CURRENT_TIME_SEC.tv_sec;
 
 #ifdef _DEBUG
 	DBG("%u - lat: %f, lng: %f, accuracy: %f\n", (unsigned)time(NULL),
