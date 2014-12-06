@@ -22,19 +22,28 @@ static struct gps_location location = {
 	.latitude = 0,
 	.longitude = 0,
 	.accuracy = 0,
-	.coord_age = 0
 };
+
+/*
+ * Timestamp of the latest gps location update
+ */
+static long gps_location_ts = 0;
 
 static DEFINE_RWLOCK(location_lock);
 
 /*
  * Accessor exposed to the rest of the kernel
  */
-void get_location(struct gps_location *loc)
+long get_location(struct gps_location *loc)
 {
+	long local_ts;
+
 	read_lock(&location_lock);
 	memcpy(loc, &location, sizeof(location));
+	local_ts = gps_location_ts;
 	read_unlock(&location_lock);
+
+	return local_ts;
 }
 
 /*
@@ -66,6 +75,7 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 
 	write_lock(&location_lock);
 	memcpy(&location, &k_location, sizeof(k_location));
+	gps_location_ts = CURRENT_TIME_SEC.tv_sec;
 	write_unlock(&location_lock);
 
 	errno = 0;
