@@ -70,7 +70,7 @@ void poll_gps_data(void)
 						     location.latitude,
 						     location.longitude,
 						     location.accuracy);
-	if(set_gps_location(&location) < 0)
+	if (set_gps_location(&location) < 0)
 		DBG("failed to write gps data to kernel\n");
 #else
 	set_gps_location(&location);
