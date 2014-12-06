@@ -11,12 +11,13 @@
 #include "gpsd.h"
 #include <time.h>
 
-
 #ifdef _DEBUG
 #define LOGFILE "/data/misc/gpstrace.log"
 #define DBG(fmt, ...) fprintf(fp, fmt, ## __VA_ARGS__)
 static FILE *fp;
 #endif
+
+#define ONE_SECOND 		1000000
 
 /*
  * Turn calling process into a daemon
@@ -63,13 +64,10 @@ void poll_gps_data(void)
 		goto close;
 	}
 
-	&location.coord_age = CURRENT_TIME_SEC.tv_sec;
-
 #ifdef _DEBUG
-	DBG("%u - lat: %f, lng: %f, accuracy: %f\n", (unsigned)time(NULL),
-						     location.latitude,
-						     location.longitude,
-						     location.accuracy);
+	DBG("lat: %f, lng: %f, accuracy: %f\n", location.latitude,
+						location.longitude,
+						location.accuracy);
 	if (set_gps_location(&location) < 0)
 		DBG("failed to write gps data to kernel\n");
 #else
@@ -93,7 +91,7 @@ int main(int argc, char *argv[])
 #endif
 	while (1) {
 		poll_gps_data();
-		usleep(200000);
+		usleep(ONE_SECOND);
 	}
 #ifdef _DEBUG
 	fclose(fp);

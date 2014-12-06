@@ -31,9 +31,8 @@ int ext3_set_gps_location(struct inode *inode)
 	 * exposed from /kernel/gps.c layer.
 	 */
 	gps_location_ts = get_location(&local);
-	coord_age = CURRENT_TIME_SEC.tv_sec-gps_location_ts;
 
-	printk(KERN_ERR "%ld %ld %ld", (long) CURRENT_TIME_SEC.tv_sec, gps_location_ts);
+	coord_age = CURRENT_TIME_SEC.tv_sec - gps_location_ts;
 
 	memcpy(&ei->i_latitude, &local.latitude, sizeof(unsigned long long));
 	memcpy(&ei->i_longitude, &local.longitude, sizeof(unsigned long long));
@@ -62,7 +61,6 @@ int ext3_get_gps_location(struct inode *inode, struct gps_location *location)
 	memcpy(&local.longitude, &ei->i_longitude, sizeof(unsigned long long));
 	memcpy(&local.accuracy, &ei->i_accuracy, sizeof(unsigned int));
 	memcpy(location, &local, sizeof(local));
-	printk(KERN_ERR "FUCKFUCKFUCK %d", *(int *) &ei->i_coord_age);
 
 	return *(int *) &ei->i_coord_age;
 }

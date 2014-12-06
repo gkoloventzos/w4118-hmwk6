@@ -25,7 +25,6 @@ struct gps_location {
 	double	latitude;
 	double	longitude;
 	float	accuracy;  /* accuracy in meters */
-	long	coord_age; /* coordinates age in seconds */
 };
 
 /* Use this file to access the most recent gps location

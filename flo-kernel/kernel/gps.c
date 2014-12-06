@@ -96,6 +96,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	int errno;
 	int lookup_flags;
 	struct path path;
+	int gps_coord_age;
 	struct inode *inode;
 	struct gps_location k_location;
 
@@ -119,6 +120,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		errno = rval;
 		goto path_put_out;
 	}
+	gps_coord_age = gps_location_ts == 0 ? -ENODEV : rval;
 
 	rval = copy_to_user(u_location, &k_location, sizeof(k_location));
 	if (rval < 0) {
@@ -126,7 +128,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		goto path_put_out;
 	}
 
-	errno = 0;
+	errno = gps_coord_age;
 path_put_out:
 	path_put(&path);
 out:

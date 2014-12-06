@@ -12,7 +12,7 @@
  */
 #include "file_loc.h"
 
-static void print_location(struct gps_location loc, int age)
+static void print_location(struct gps_location loc, int coord_age)
 {
 	/* Google Maps base URL */
 	char *url = "https://maps.google.com/maps?q=";
@@ -20,7 +20,7 @@ static void print_location(struct gps_location loc, int age)
 	printf("latitude:\t%f\n", loc.latitude);
 	printf("longitude:\t%f\n", loc.longitude);
 	printf("accuracy:\t%f\n", loc.accuracy);
-	printf("data age:\t%d\n", age);
+	printf("data age:\t%d\n", coord_age);
 	printf("maps url:\t%s%f+%f\n", url, loc.latitude, loc.longitude);
 }
 
