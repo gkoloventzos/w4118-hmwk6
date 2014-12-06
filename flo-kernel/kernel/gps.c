@@ -44,23 +44,32 @@ void get_location(struct gps_location *loc)
 SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 {
 	int rval;
+	int errno;
 	struct gps_location k_location;
 
-	if (current_uid() != 0)
-		return -EACCES;
+	if (current_uid() != 0) {
+		errno = -EACCES;
+		goto out;
+	}
 
-	if (u_location == NULL)
-		return -EINVAL;
+	if (u_location == NULL) {
+		errno = -EINVAL;
+		goto out;
+	}
 
 	rval = copy_from_user(&k_location, u_location, sizeof(k_location));
-	if (rval < 0)
-		return -EFAULT;
+	if (rval < 0) {
+		errno = -EFAULT;
+		goto out;
+	}
 
 	write_lock(&location_lock);
 	memcpy(&location, &k_location, sizeof(k_location));
 	write_unlock(&location_lock);
 
-	return 0;
+	errno = 0;
+out:
+	return errno;
 }
 
 /*
@@ -81,7 +90,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	rval = user_path(pathname, &path);
 	if (rval) {
 		errno = rval;
-		goto error;
+		goto out;
 	}
 	inode = path.dentry->d_inode;
 
@@ -93,16 +102,18 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	rval = vfs_get_gps_location(inode, &k_location);
 	if (rval < 0) {
 		errno = rval;
-		goto error;
+		goto path_put_out;
 	}
 
 	rval = copy_to_user(u_location, &k_location, sizeof(k_location));
 	if (rval < 0) {
 		errno = -EFAULT;
-		goto error;
+		goto path_put_out;
 	}
 
-	return 0;
-error:
+	errno = 0;
+path_put_out:
+	path_put(&path);
+out:
 	return errno;
 }
