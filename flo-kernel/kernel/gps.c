@@ -5,6 +5,7 @@
  *
  * COMS W4118 Fall 2014, Columbia University
  */
+#include <linux/fs.h>
 #include <linux/gps.h>
 #include <linux/slab.h>
 #include <linux/namei.h>
@@ -89,7 +90,11 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	 * check permmisions and stuff...
 	 * check return value of vfs_get...
 	 */
-	vfs_get_gps_location(inode, &k_location);
+	rval = vfs_get_gps_location(inode, &k_location);
+	if (rval < 0) {
+		errno = rval;
+		goto error;
+	}
 
 	rval = copy_to_user(u_location, &k_location, sizeof(k_location));
 	if (rval < 0) {
