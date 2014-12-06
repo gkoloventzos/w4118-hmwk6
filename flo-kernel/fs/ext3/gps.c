@@ -32,7 +32,10 @@ int ext3_set_gps_location(struct inode *inode)
 	 */
 	gps_location_ts = get_location(&local);
 
-	coord_age = CURRENT_TIME_SEC.tv_sec - gps_location_ts;
+	if (gps_location_ts != 0)
+		coord_age = CURRENT_TIME_SEC.tv_sec - gps_location_ts;
+	else
+		coord_age = -ENODEV;
 
 	memcpy(&ei->i_latitude, &local.latitude, sizeof(unsigned long long));
 	memcpy(&ei->i_longitude, &local.longitude, sizeof(unsigned long long));

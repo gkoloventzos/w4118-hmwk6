@@ -120,7 +120,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		errno = rval;
 		goto path_put_out;
 	}
-	gps_coord_age = gps_location_ts == 0 ? -ENODEV : rval;
+	gps_coord_age = rval;
 
 	rval = copy_to_user(u_location, &k_location, sizeof(k_location));
 	if (rval < 0) {
