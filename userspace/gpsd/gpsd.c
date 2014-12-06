@@ -11,9 +11,12 @@
 #include "gpsd.h"
 #include <time.h>
 
+
+#ifdef _DEBUG
 #define LOGFILE "/data/misc/gpstrace.log"
 #define DBG(fmt, ...) fprintf(fp, fmt, ## __VA_ARGS__)
 static FILE *fp;
+#endif
 
 /*
  * Turn calling process into a daemon
@@ -44,7 +47,6 @@ void daemonize(void)
 
 void poll_gps_data(void)
 {
-	int rval;
 	FILE *file;
 	struct gps_location location;
 
@@ -59,17 +61,16 @@ void poll_gps_data(void)
 		perror("fscanf");
 		goto close;
 	}
-
+#ifdef _DEBUG
 	DBG("%u - lat: %f, lng: %f, accuracy: %f\n", (unsigned)time(NULL),
 						     location.latitude,
 						     location.longitude,
 						     location.accuracy);
-
-	rval = set_gps_location(&location);
-	if (rval < 0) {
-		perror("set_gps_location");
+	if(set_gps_location(&location) < 0)
 		DBG("failed to write gps data to kernel\n");
-	}
+#else
+	set_gps_location(&location);
+#endif
 
 close:	fclose(file);
 exit:	return;
@@ -79,18 +80,19 @@ int main(int argc, char *argv[])
 {
 	/* turn me into daemon */
 	daemonize();
-
+#ifdef _DEBUG
 	fp = fopen(LOGFILE, "w+");
 	if (fp == NULL) {
 		perror("fopen");
 		exit(EXIT_FAILURE);
 	}
-
+#endif
 	while (1) {
 		poll_gps_data();
 		usleep(200000);
 	}
-
+#ifdef _DEBUG
 	fclose(fp);
+#endif
 	return 0;
 }

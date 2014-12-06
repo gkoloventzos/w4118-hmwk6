@@ -6,6 +6,10 @@ LDFLAGS := -static $(INCLUDE)
 
 OBJECTS := gpsd.o
 
+ifeq ($(DEBUG),1)
+CFLAGS += -D_DEBUG
+endif
+
 all: gpsd 
 
 : $(OBJECTS)
