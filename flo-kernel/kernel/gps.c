@@ -83,11 +83,15 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 {
 	int rval;
 	int errno;
+	int lookup_flags;
 	struct path path;
 	struct inode *inode;
 	struct gps_location k_location;
 
-	rval = user_path(pathname, &path);
+
+	lookup_flags = 0;
+	lookup_flags |= (AT_SYMLINK_FOLLOW | !LOOKUP_FOLLOW);
+	rval = user_path_at(AT_FDCWD, pathname,  lookup_flags, &path);
 	if (rval) {
 		errno = rval;
 		goto out;
