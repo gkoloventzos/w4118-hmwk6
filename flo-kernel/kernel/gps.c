@@ -21,7 +21,8 @@
 static struct gps_location location = {
 	.latitude = 0,
 	.longitude = 0,
-	.accuracy = 0
+	.accuracy = 0,
+	.coord_age = 0
 };
 
 static DEFINE_RWLOCK(location_lock);
