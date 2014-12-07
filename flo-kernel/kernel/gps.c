@@ -59,27 +59,27 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, u_location)
 
 	if (current_uid() != 0) {
 		errno = -EACCES;
-		goto out;
+		goto really_out;
 	}
 
 	if (u_location == NULL) {
 		errno = -EINVAL;
-		goto out;
+		goto really_out;
 	}
 
 	rval = copy_from_user(&k_location, u_location, sizeof(k_location));
 	if (rval < 0) {
 		errno = -EFAULT;
-		goto out;
+		goto really_out;
 	}
 
 	write_lock(&location_lock);
 	memcpy(&location, &k_location, sizeof(k_location));
 	gps_location_ts = CURRENT_TIME_SEC.tv_sec;
 	write_unlock(&location_lock);
-
 	errno = 0;
-out:
+
+really_out:
 	return errno;
 }
 
@@ -94,27 +94,34 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 {
 	int rval;
 	int errno;
+	char *from;
 	int lookup_flags;
 	struct path path;
 	int gps_coord_age;
 	struct inode *inode;
 	struct gps_location k_location;
 
+	from = getname(pathname);
+	if (IS_ERR(from)) {
+		errno = PTR_ERR(from);
+		goto really_out;
+	}
 
 	lookup_flags = 0;
 	lookup_flags |= (AT_SYMLINK_FOLLOW | !LOOKUP_FOLLOW);
 	rval = user_path_at(AT_FDCWD, pathname,  lookup_flags, &path);
-	if (rval) {
+	if (rval < 0) {
 		errno = rval;
-		goto out;
+		goto putname_out;
 	}
-	inode = path.dentry->d_inode;
 
-	/*
-	 * TODO
-	 * check permmisions and stuff...
-	 * check return value of vfs_get...
-	 */
+	inode = path.dentry->d_inode;
+	rval = inode_permission(path.dentry->d_inode, MAY_READ);
+	if (rval < 0) {
+		errno = rval;
+		goto path_put_out;
+	}
+
 	rval = vfs_get_gps_location(inode, &k_location);
 	if (rval < 0) {
 		errno = rval;
@@ -127,10 +134,12 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		errno = -EFAULT;
 		goto path_put_out;
 	}
-
 	errno = gps_coord_age;
+
 path_put_out:
 	path_put(&path);
-out:
+putname_out:
+	putname(from);
+really_out:
 	return errno;
 }
