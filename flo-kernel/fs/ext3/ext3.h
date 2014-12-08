@@ -625,6 +625,7 @@ struct ext3_inode_info {
 	__u64 i_longitude;
 	__u32 i_accuracy;
 	__u32 i_coord_age;
+	rwlock_t gps_lock;
 #endif
 };
 

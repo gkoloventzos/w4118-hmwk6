@@ -526,6 +526,9 @@ static void init_once(void *foo)
 	init_rwsem(&ei->xattr_sem);
 #endif
 	mutex_init(&ei->truncate_mutex);
+#ifdef CONFIG_GPS_TAGFS
+	rwlock_init(&ei->gps_lock);
+#endif
 	inode_init_once(&ei->vfs_inode);
 }
 

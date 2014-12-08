@@ -37,10 +37,12 @@ int ext3_set_gps_location(struct inode *inode)
 	else
 		coord_age = -ENODEV;
 
+	write_lock(&ei->gps_lock);
 	memcpy(&ei->i_latitude, &local.latitude, sizeof(unsigned long long));
 	memcpy(&ei->i_longitude, &local.longitude, sizeof(unsigned long long));
 	memcpy(&ei->i_accuracy, &local.accuracy, sizeof(unsigned int));
 	memcpy(&ei->i_coord_age, &coord_age, sizeof(unsigned int));
+	write_unlock(&ei->gps_lock);
 
 	return 0;
 }
@@ -60,10 +62,12 @@ int ext3_get_gps_location(struct inode *inode, struct gps_location *location)
 
 	BUG_ON(!ei);
 
+	read_lock(&ei->gps_lock);
 	memcpy(&local.latitude, &ei->i_latitude, sizeof(unsigned long long));
 	memcpy(&local.longitude, &ei->i_longitude, sizeof(unsigned long long));
 	memcpy(&local.accuracy, &ei->i_accuracy, sizeof(unsigned int));
 	memcpy(location, &local, sizeof(local));
+	read_unlock(&ei->gps_lock);
 
 	return *(int *) &ei->i_coord_age;
 }
