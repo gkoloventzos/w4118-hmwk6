@@ -6,6 +6,13 @@ ASSUMPTIONS:
 
 We followed the instructions without making any additional assumptions.
 
+HMWK6.FS DETAILS:
+
+The file system contains 3 seperate folders with one file, one soft
+link, and one hard link each. The first folder is tagged with GPS
+info @New Jersey, the second with GPS info @Columbia (Mudd), and the
+third with GPS info @Morning-side drive.
+
 MODIFIED/ADDED FILES:
 
 - flo-kernel/arch/arm/configs/flo_defconfig
