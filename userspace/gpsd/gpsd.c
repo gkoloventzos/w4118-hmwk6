@@ -17,7 +17,7 @@
 static FILE *fp;
 #endif
 
-#define ONE_SECOND 		1000000
+#define ONE_SECOND		1000000
 
 /*
  * Turn calling process into a daemon

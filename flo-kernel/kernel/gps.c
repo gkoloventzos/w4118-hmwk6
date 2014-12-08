@@ -27,7 +27,7 @@ static struct gps_location location = {
 /*
  * Timestamp of the latest gps location update
  */
-static long gps_location_ts = 0;
+static long gps_location_ts;
 
 static DEFINE_RWLOCK(location_lock);
 
