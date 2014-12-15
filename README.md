@@ -1,19 +1,10 @@
-E. Atlidakis, G. Koloventzos, A. Papancea
-UNI: ea2615, gk2409, alp2200
-Last updated: 12/06/2014
+Implementations of a GPS tagged ext3 file system.
+==
+Copyright (C) 2014 V. Atlidakis, G. Koloventzos, A. Papancea
 
-ASSUMPTIONS:
+COMS-W4118 Columbia University
 
-We followed the instructions without making any additional assumptions.
-
-HMWK6.FS DETAILS:
-
-The file system contains 3 seperate folders with one file, one soft
-link, and one hard link each. The first folder is tagged with GPS
-info @New Jersey, the second with GPS info @Columbia (Mudd), and the
-third with GPS info @Morning-side drive.
-
-MODIFIED/ADDED FILES:
+## MODIFIED/ADDED FILES:
 
 - flo-kernel/arch/arm/configs/flo_defconfig
   defined the CONFIG_GPS_TAGFS preprocessor variable
@@ -121,7 +112,16 @@ MODIFIED/ADDED FILES:
 - userspace/gpsd/gpsd.h
   header file defining the gps_location struct in userspace  
 
-RESOURCES USED:
+
+## HMWK6.FS DETAILS:
+
+The file system contains 3 seperate folders with one file, one soft
+link, and one hard link each. The first folder is tagged with GPS
+info @New Jersey, the second with GPS info @Columbia (Mudd), and the
+third with GPS info @Morning-side drive.
+
+
+## RESOURCES USED:
 
 1. Linux Cross Reference
    http://lxr.free-electrons.com
